@@ -1,5 +1,5 @@
  Assignment Details
- Your task is to write a computer program in Python, which allows users to
+Task was to write a computer program in Python, which allows users to
  specify a number of cards to be created. Your program will create the requested
  cards, along with the numerical analysis of the simulations. The program should
  provide a comprehensive but easy to use and intuitive interface (text or graph
