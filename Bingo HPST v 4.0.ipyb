@@ -1,0 +1,211 @@
+from tkinter import *
+from tkinter import messagebox
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
+NavigationToolbar2Tk)
+import random
+
+root = Tk()
+
+def getvals():
+   # print("Submitting form")
+
+    cards = number_of_cardsvalue.get()
+    simulations = number_of_gamesvalue.get()
+    # you can add your own catch logic
+    try:
+        cards = int(cards)
+        print(cards)
+        simulations = int(simulations)
+        print(simulations)
+        #call your function
+        messagebox.showinfo("Success", "This is done, you can enter again")
+        final_results = []
+        #cards = int(input("Insert no. of players in the Game"))
+        #simulations = int(input("insert no. of games to play"))
+        for z in range(simulations):
+            x= [0] * 75
+            #print(type(x))
+            x=np.random.permutation(range(1,76)) #forming simulation for call out of 1-75
+            #x=x.astype(str)
+            print(x)
+            #print(type(x))
+
+            #Record the number of cards with BINGO (from all simulations) after x numbers have been called
+            total_winners = 0
+
+            #forming array count of winners, num. of winners after x calls
+            count_winners = [0] * 75
+
+        #     number_of_cards=int(input("Insert no. of cards required")) #input
+            number_of_cards = cards
+            card_list = []
+
+            #forming array for winners of size num. of cards, checking if the card is winner or not
+            winners = [0] * number_of_cards
+            called_num = [0] * x
+            cumulative_winners = [0] * x
+
+            for i in range(number_of_cards): #5*5 grid for n cards
+                b = random.sample(range(1,16), k=5)
+                i = random.sample(range(16,31), k=5)
+                n = random.sample(range(31,46), k=5)
+                g = random.sample(range(46,61), k=5)
+                o = random.sample(range(61,76), k=5)
+                bingo_card = np.stack((b,i,n,g,o),axis=1)
+             #   bingo_card= bingo_card.astype(str)
+                bingo_card[2][2] = 0
+                card_list.append(bingo_card)
+
+            for i in range(number_of_cards): #debugging
+                    print(card_list[i], '\n')
+
+            print('-------------------')
+            #print(card_list[0][0,0])
+
+             #    print(x[i])
+            i = -1
+            for g in x: #callout
+                i=i+1
+                #if winners.count(1) != number_of_cards:
+                 #   break
+                   # print('\n iteration:',i, '\n')
+                for s in range (number_of_cards): #players playing/cards being played
+                    if winners[s] == 1: # if card is already winner then skip it , if 1 card wins, it cannot play again
+                        continue
+                    for j in range(5):
+                        for k in range(5):#checking the rows and columns
+                            if g==card_list[s][j,k]: #number called
+                                    card_list[s][j,k] = 0
+
+                                    #ROW
+                                    is_bingo1=1
+                                    #if replaced number has completed the bingo card
+                                    for l in range(5): #checking for row
+                                        if card_list[s][j,l] != 0:
+                                            is_bingo1=0
+                                            break
+                                    #COLUMN
+                                    is_bingo2=1
+                                    #if replaced number has completed the bingo card
+                                    for m in range(5): #checking for col
+                                        if card_list[s][m,k] != 0:
+                                            is_bingo2=0
+                                            break
+
+                                    #DIAGONAL
+                                    is_bingo3 = 1
+                                    #if replaced number has completed the bingo card
+                                    for x in range(5): #checking for diag
+                                        for y in range(5):
+                                            if x == y: #diagonal 1 condition
+                                                if card_list[s][x,y] != 0:#check not equal sign
+                                                    is_bingo3 = 0  #if all 5 elements = 0 then is_bingo = 1 otherwise will be updated as above
+                                                    break
+                                    is_bingo4 = 1
+                                    #if replaced number has completed the bingo card
+                                    for x in range(5): #checking for diag
+                                        for y in range(5):
+                                            if x + y == 4: #diagonal 2 condition
+                                                if card_list[s][x,y] != 0: #check not equal sign
+                                                    is_bingo4 = 0  #if all 5 elements = 0 then is_bingo = 1 otherwise will be updated as above
+                                                    break
+
+
+                                    #keeping track of winners
+                                    if is_bingo4 == 1 or  is_bingo3 == 1 or  is_bingo2 == 1 or  is_bingo1 == 1:
+                                            winners[s] = 1
+                                            count_winners[i] = count_winners[i] + 1
+                                            total_winners =  total_winners + 1
+                    #print(card_list[s],'\n')
+                called_num[i] = i+1
+                cumulative_winners[i] = total_winners
+            final_results.append(cumulative_winners)
+        lst = list(zip(*final_results))
+        means = []
+        maxs = []
+        mins = []
+        stds = []
+        for i in lst:
+            means.append(np.mean(i))
+            mins.append(np.min(i))
+            maxs.append(np.max(i))
+            stds.append(np.std(i))
+
+
+            #if winners.count(1) != number_of_cards: # if card is already winner then skip it , if 1 card wins, it cannot play again
+                #print("Winners in ",i," call are:",count_winners[i])
+                #print("Total winners after ",i," call are:", total_winners)
+                #print ("Final list of winners:", winners)
+        #print("Winners in ",i," call are:",count_winners[i])
+        #print("Total winners after ",i," call are:", total_winners)
+        #print ("Final list of winners:", winners)
+                #print ("Count of winners:", count_winners)
+        # Plot a simple line chart
+        #plt.plot(called_num, means, color='black')
+        #plt.plot(called_num, maxs)
+        #plt.plot(called_num, mins)
+        #plt.fill_between(called_num, np.array(means)-np.array(stds), np.array(means)+np.array(stds))
+
+              # the figure that will contain the plot
+        fig = Figure(figsize = (5, 5), dpi = 100)
+
+        # list of squares
+        #y = [i**2 for i in range(101)]
+
+        # adding the subplot
+        plot1 = fig.add_subplot(111)
+
+        # plotting the graph
+        plot1.plot(called_num, means, color='black')
+        plot1.plot(called_num, maxs)
+        plot1.plot(called_num, mins)
+        plot1.fill_between(called_num, np.array(means)-np.array(stds), np.array(means)+np.array(stds))
+
+        # creating the Tkinter canvas
+        # containing the Matplotlib figure
+        canvas = FigureCanvasTkAgg(fig,
+                                   master = root)
+
+        fig.canvas.draw_idle()
+        canvas.draw()
+
+        # placing the canvas on the Tkinter window
+        canvas.get_tk_widget().pack()
+
+        # creating the Matplotlib toolbar
+        #toolbar = NavigationToolbar2Tk(canvas, root)
+        #toolbar.update()
+
+        # placing the toolbar on the Tkinter window
+        #canvas.get_tk_widget().pack()
+        #plt.show()
+        #figure3=plt.show()
+    except ValueError:
+        messagebox.showerror('Python Error', 'Error: Enter Valid Number Only')
+
+root.geometry("644x344")
+#Heading
+Label(root,
+      text="Welcome to HPST's Bingo",
+      font="comicsansms 13 bold",
+      pady=15).pack()
+
+# Tkinter variable for storing entries
+number_of_cardsvalue = StringVar()
+number_of_gamesvalue = StringVar()
+#Text & Entries for our form
+number_of_cards = Label(root, text="Number of Cards").pack()
+number_of_cardsentry = Entry(root, textvariable=number_of_cardsvalue)
+number_of_cardsentry.pack()
+number_of_games = Label(root, text="Number of Games").pack()
+number_of_gamesentry = Entry(root, textvariable=number_of_gamesvalue)
+number_of_gamesentry.pack()
+# Packing the Entries
+
+#Button & packing it and assigning it a command
+Button(text="Submit to Play Bingo", command=getvals).pack()
+
+root.mainloop()
